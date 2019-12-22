@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated Oct 14, 2019 12:59:26 PM by Hibernate Tools 5.4.3.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true" default-access="property" default-cascade="none" default-lazy="true">
+    <class catalog="hibernate_test" dynamic-insert="false" dynamic-update="false" mutable="true" name="model.Product114" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="product114">
+        <id name="productId" type="java.lang.Long">
+            <column name="product_id"/>
+            <generator class="identity"/>
+        </id>
+        <many-to-one class="model.Category114" embed-xml="true" fetch="select" insert="true" name="category114" not-found="exception" optimistic-lock="true" unique="false" update="true">
+            <column name="category_id"/>
+        </many-to-one>
+        <property generated="never" lazy="false" name="code" optimistic-lock="true" type="string" unique="false">
+            <column name="code"/>
+        </property>
+        <property generated="never" lazy="false" name="name" optimistic-lock="true" type="string" unique="false">
+            <column name="name"/>
+        </property>
+    </class>
+</hibernate-mapping>

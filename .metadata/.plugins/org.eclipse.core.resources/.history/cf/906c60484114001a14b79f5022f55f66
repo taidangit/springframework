@@ -1,0 +1,63 @@
+package com.ppm.rest;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ppm.domain.Project;
+import com.ppm.service.MapValidationService;
+import com.ppm.service.ProjectService;
+
+@RestController
+@RequestMapping("/api/project")
+public class ProjectRestController {
+	
+	@Autowired
+	private ProjectService projectService;
+	
+	@Autowired
+	private MapValidationService mapValidationService;
+	
+	@PostMapping("")
+	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result) {
+		ResponseEntity<?> errorMap = mapValidationService.mapValidationService(result);
+		if(errorMap != null) {
+			return errorMap;
+		}
+		projectService.saveOrUpdate(project);
+		return new ResponseEntity<Project>(project, HttpStatus.CREATED);
+	}
+	
+	@GetMapping("/{projectIndentifier}")
+	public ResponseEntity<?> getProjectByIdentifier(@PathVariable String projectIndentifier) {
+		Project project = projectService.findByProjectIdentifier(projectIndentifier);
+		return new ResponseEntity<Project>(project, HttpStatus.OK);
+	}
+	
+	@GetMapping("/list")
+	public ResponseEntity<?> getAllProjects() {
+		List<Project> projects = projectService.findAll();
+		return new ResponseEntity<List<Project>>(projects, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/{projectIndentifier}")
+	public ResponseEntity<?> deleteProjectByIdentifier(@PathVariable String projectIndentifier) {
+		projectService.deleteByProjectIndentifier(projectIndentifier);
+		return new ResponseEntity<String>("Deleted project identifier: "+projectIndentifier, HttpStatus.OK);
+	}
+
+}

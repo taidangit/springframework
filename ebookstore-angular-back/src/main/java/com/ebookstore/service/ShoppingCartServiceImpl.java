@@ -1,0 +1,63 @@
+package com.ebookstore.service;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ebookstore.domain.CartItem;
+import com.ebookstore.domain.ShoppingCart;
+import com.ebookstore.repository.CartItemRepository;
+import com.ebookstore.repository.ShoppingCartRepository;
+
+@Service
+public class ShoppingCartServiceImpl implements ShoppingCartService {
+
+	@Autowired
+	private CartItemService cartItemService;
+	
+	@Autowired
+	private CartItemRepository cartItemRepository;
+	
+	@Autowired
+	private ShoppingCartRepository shoppingCartRepository;
+	
+	@Override
+	public void updateShoppingCart(ShoppingCart shoppingCart) {
+		BigDecimal cartTotal = new BigDecimal(0);
+		
+		List<CartItem> cartItems = cartItemService.findByShoppingCart(shoppingCart);
+		if(cartItems.size() > 0) {
+			for(CartItem cartItem : cartItems) {
+				if(cartItem.getBook().getInStockNumber() > 0) {
+					cartTotal = cartTotal.add(cartItem.getSubtotal());
+				}
+			}
+		}
+		
+		shoppingCart.setGrandTotal(cartTotal);
+		shoppingCartRepository.save(shoppingCart);
+		
+	}
+	
+	@Override
+	public void clearShoppingCart(ShoppingCart shoppingCart) {
+		List<CartItem> cartItems = cartItemService.findByShoppingCart(shoppingCart);
+		
+		for(CartItem cartItem : cartItems) {
+			cartItem.setShoppingCart(null);
+			cartItemRepository.save(cartItem);
+		}
+		
+		shoppingCart.setGrandTotal(new BigDecimal(0));
+		shoppingCartRepository.save(shoppingCart);
+	}
+
+	
+	@Override
+	public ShoppingCart findById(int shoppingCartId) {
+		return shoppingCartRepository.findById(shoppingCartId).get();
+	}
+
+}

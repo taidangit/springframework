@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+        http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+
+	<!-- <view-state id="start">
+	</view-state> -->
+	
+	<var name="message" class="com.luv2code.entity.Messages" />
+
+	<view-state id="showContactForm" model="message">
+		<on-entry>
+			<set name="requestScope.fromMessage" value="messageDAOImpl.getMessageById(2)"></set>
+			<set name="flowScope.fromName" value="fromMessage?.name"></set>
+			<set name="flowScope.fromEmail" value="fromMessage?.email"></set>
+			<set name="flowScope.fromSubject" value="fromMessage?.subject"></set>
+			<set name="flowScope.fromContent" value="fromMessage?.content"></set>
+		</on-entry>
+		<transition on="send" to="processSendMessage" />
+	</view-state>
+
+	<action-state id="processSendMessage">
+		<evaluate expression="messageDAOImpl.saveMessage(message)" />
+		<transition to="messageSent" />
+	</action-state>
+
+	<view-state id="messageSent" />
+
+</flow>

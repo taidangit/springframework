@@ -1,0 +1,5 @@
+package com.dangphattai.controller;
+
+public class HomeController {
+
+}

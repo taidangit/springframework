@@ -1,0 +1,147 @@
+package com.ebookstore.resource;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ebookstore.domain.Role;
+import com.ebookstore.domain.ShoppingCart;
+import com.ebookstore.domain.User;
+import com.ebookstore.service.RoleService;
+import com.ebookstore.service.UserService;
+import com.ebookstore.utility.HashingPassword;
+import com.ebookstore.utility.MailConstructor;
+
+@CrossOrigin(origins = "http://localhost:4200")
+@RestController
+@RequestMapping("/api/user")
+public class UserResource {
+	
+	@Autowired
+	private JavaMailSender mailSender;
+	
+	@Autowired
+	private MailConstructor mailConstructor;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private RoleService roleService;
+	
+	@PostMapping("/newUser")
+	public ResponseEntity<String> newUser(@RequestBody User user) {
+		
+		if(userService.findByUsername(user.getUsername()) != null) {
+			return new ResponseEntity<String>("usernameExists", HttpStatus.BAD_REQUEST);
+		}
+		
+		if(userService.findByEmail(user.getEmail()) != null) {
+			return new ResponseEntity<String>("emailExists", HttpStatus.BAD_REQUEST);
+		}
+
+		String password = HashingPassword.randomPassword();
+		String encryptedPassword = HashingPassword.encrypt(password);
+		user.setPassword(encryptedPassword);
+		
+		Set<Role> roles = new HashSet<Role>();
+		roles.add(roleService.findByName("ROLE_USER"));
+		user.setRoles(roles);
+		ShoppingCart shoppingCart = new ShoppingCart();
+		shoppingCart.setUser(user);
+		user.setShoppingCart(shoppingCart);
+		userService.save(user);
+		
+		SimpleMailMessage emailSend = mailConstructor.constructNewUserEmail(user, password);
+		
+		mailSender.send(emailSend);
+		
+		return new ResponseEntity<String>("User Added Successfully!", HttpStatus.CREATED);
+		
+	}
+	
+	@PostMapping("/forgetPassword")
+	public ResponseEntity<String> forgetPassword(@RequestBody HashMap<String, String> mapper) {
+		User user = userService.findByEmail(mapper.get("email"));
+
+		if (user == null) {
+			return new ResponseEntity<String>("emailNotExists", HttpStatus.BAD_REQUEST);
+		}
+		
+		String password = HashingPassword.randomPassword();
+		String encryptedPassword = HashingPassword.encrypt(password);
+		user.setPassword(encryptedPassword);
+		userService.save(user);
+
+		SimpleMailMessage newEmail = mailConstructor.constructNewUserEmail(user, password);
+		mailSender.send(newEmail);
+
+		return new ResponseEntity<String>("Email sent!", HttpStatus.OK);
+	}
+	
+	@PostMapping("/updateUserInfo")
+	public ResponseEntity<String> updateUserInfo(@RequestBody HashMap<String, String> mapper) {
+		
+		String userId = mapper.get("userId");
+		String firstName =  mapper.get("firstName");
+		String lastName = mapper.get("lastName");
+		String email =  mapper.get("email");
+		String phone = mapper.get("phone");
+		String username = mapper.get("username");
+		String newPassword = mapper.get("newPassword");
+		String currentPassword = mapper.get("password");
+		
+		User currentUser = userService.findById(Integer.parseInt(userId));
+		
+		if (userService.findByEmail(email) != null) {
+			if(userService.findByEmail(email).getUserId() != currentUser.getUserId()) {
+				return new ResponseEntity<String>("emailExists", HttpStatus.BAD_REQUEST);
+			}
+		}
+		
+		if (userService.findByUsername(username) != null) {
+			if(userService.findByUsername(username).getUserId() != currentUser.getUserId()) {
+				return new ResponseEntity<String>("usernameExists", HttpStatus.BAD_REQUEST);
+			}
+		}
+		
+		if(currentUser.getPassword().equals(currentPassword)) {
+			currentUser.setPassword(HashingPassword.encrypt(newPassword));
+			
+		} else {
+			return new ResponseEntity<String>("incorrectPassword", HttpStatus.BAD_REQUEST);
+		}
+		
+		currentUser.setEmail(email);
+		currentUser.setFirstName(firstName);
+		currentUser.setLastName(lastName);
+		currentUser.setPhone(phone);
+		currentUser.setUsername(username);
+		
+		userService.save(currentUser);
+		
+		return new ResponseEntity<String>("Update Success!", HttpStatus.OK);
+	}
+	
+	@GetMapping("/getCurrentUser/{username}")
+	public ResponseEntity<User> getCurrentUser(@PathVariable String username) {
+		User user = userService.findByUsername(username);
+
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+
+}

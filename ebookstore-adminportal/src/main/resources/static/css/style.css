@@ -1,0 +1,35 @@
+/* Show it is fixed to the top */
+
+hr {
+	border: none;
+	height: 1px;
+	background-color: #333;
+	margin-top: 40px;
+}
+
+.home-headline{
+	font-family: 'Times New Roman', Times, serif;
+	font-size: 24px;
+	color: #fff;
+	text-align: center;
+	margin-bottom: 40px;
+}
+.home-headline span {
+	background-color: #231F20;
+    padding: 5px 22px;
+	
+}
+
+.section-headline {
+	font-family: 'Times New Roman', Times, serif;
+	font-size:24px;
+	color: #fff;
+	text-align: center;
+	margin-top: 90px;
+}
+
+
+.section-headline span {
+	background-color: #231F20;
+    padding: 5px 22px;
+}

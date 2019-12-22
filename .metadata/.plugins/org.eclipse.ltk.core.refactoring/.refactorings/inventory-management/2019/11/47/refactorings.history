@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;HashingPassword.java&apos; to &apos;ebookstore-angular-back/src/main/java/com.ebookstore.utility&apos;&#x0D;&#x0A;- Original project: &apos;inventory-management&apos;&#x0D;&#x0A;- Destination element: &apos;ebookstore-angular-back/src/main/java/com.ebookstore.utility&apos;&#x0D;&#x0A;- Original element: &apos;com.tedu.util.HashingPassword.java&apos;" description="Copy compilation unit" destination="=ebookstore-angular-back/src\/main\/java&lt;com.ebookstore.utility" element1="/src\/main\/java&lt;com.tedu.util{HashingPassword.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1574354254265" units="1" version="1.0"/>
+</session>

@@ -1,0 +1,10 @@
+127.0.0.1 - - [03/Nov/2019:22:24:00 +0700] "GET / HTTP/1.1" 404 1074
+0:0:0:0:0:0:0:1 - - [03/Nov/2019:22:24:09 +0700] "GET /spring-mvc-demo/ HTTP/1.1" 200 338
+0:0:0:0:0:0:0:1 - - [03/Nov/2019:22:24:45 +0700] "GET /spring-mvc-demo/ HTTP/1.1" 200 338
+0:0:0:0:0:0:0:1 - - [03/Nov/2019:22:24:47 +0700] "GET /favicon.ico HTTP/1.1" 404 1085
+0:0:0:0:0:0:0:1 - - [03/Nov/2019:22:30:35 +0700] "GET /spring-mvc-demo/hello/showForm HTTP/1.1" 200 308
+0:0:0:0:0:0:0:1 - - [03/Nov/2019:22:39:27 +0700] "POST /spring-mvc-demo/hello/processFormVersionTwo HTTP/1.1" 200 217
+0:0:0:0:0:0:0:1 - - [03/Nov/2019:22:43:40 +0700] "GET /spring-mvc-demo/hello/showForm HTTP/1.1" 200 308
+0:0:0:0:0:0:0:1 - - [03/Nov/2019:22:43:43 +0700] "GET /spring-mvc-demo/student/showForm HTTP/1.1" 404 1132
+0:0:0:0:0:0:0:1 - - [03/Nov/2019:22:52:24 +0700] "GET /spring-mvc-demo/hello/showForm HTTP/1.1" 200 308
+0:0:0:0:0:0:0:1 - - [03/Nov/2019:22:52:27 +0700] "POST /spring-mvc-demo/hello/processFormVersionTwo HTTP/1.1" 200 217

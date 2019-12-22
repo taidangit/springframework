@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.com">
+<head th:replace="common/header :: common-header" />
+
+<body>
+	<div th:replace="common/header :: navbar"></div>
+	
+	<div class="container">
+		
+			<div class="page-header">
+            	<h3 th:text="${titlePage}"></h3>
+            	<p class="lead">Fill the below information to add a book.</p>
+        	</div>
+        
+			<form class="form-horizontal" th:action="@{/book/save}" th:object="${book}" method="POST"
+				 enctype="multipart/form-data">
+				
+				<input type="hidden" th:field="*{bookId}"/>
+				
+				<div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                	Please Correct Errors Below.
+            	</div>
+           
+					<!-- title -->
+					<div class="form-group" >
+						<div class="row">
+							<label class="col-md-2 control-label" for="title">* Title</label> 
+							<div class="col-md-8">
+								<input type="text" class="form-control" th:field="*{title}" id="title" th:errorclass="is-invalid"
+									placeholder="Title" />
+								<small class="form-text text-muted">Title of the book.</small>
+								<div class="text-danger" th:if="${#fields.hasErrors('title')}">
+	                        		<ul>
+	                        			<li th:each="err : ${#fields.errors('title')}" th:text="${err}" />
+	                        		</ul>
+	                    		</div>
+							</div>
+						</div>
+						
+					</div>
+			
+					<!-- author -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="author">* Author</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" th:field="*{author}" id="author" th:errorclass="is-invalid"
+									placeholder="Author" />
+								<small class="form-text text-muted">Author of the book.</small>
+								<div class="text-danger" th:if="${#fields.hasErrors('title')}">
+	                        		<ul>
+	                        			<li th:each="err : ${#fields.errors('author')}" th:text="${err}" />
+	                        		</ul>
+	                    		</div>
+							</div> 
+						</div>
+					</div>
+			
+					<!-- publisher -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="publisher">Publisher</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" th:field="*{publisher}" id="publisher" th:errorclass="is-invalid"
+									placeholder="Publisher" />
+								<small class="form-text text-muted">Publisher of the book.</small>
+								<div class="text-danger" th:if="${#fields.hasErrors('publisher')}">
+	                        		<ul>
+	                        			<li th:each="err : ${#fields.errors('publisher')}" th:text="${err}" />
+	                        		</ul>
+	                    		</div>
+							</div>
+						</div>
+					</div>
+			
+					<!-- publication date -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="publicationDate">Publication Date</label> 
+							<div class="col-md-8">
+								<input type="date" class="form-control" th:field="*{publicationDate}" id="publicationDate" 
+									th:errorclass="is-invalid"
+									placeholder="Publication Date" />
+								<small class="form-text text-muted">Publication Date of the book.</small>
+								<div class="text-danger" th:if="${#fields.hasErrors('publicationDate')}">
+	                        		<ul>
+	                        			<li th:each="err : ${#fields.errors('publicationDate')}" th:text="${err}" />
+	                        		</ul>
+	                    		</div>
+							</div>
+						</div>
+					</div>
+			
+					<!-- language -->
+					<div class="form-group">
+					
+						<div class="row">
+							<label class="col-md-2 control-label" for="language">Language</label>
+							<div class="col-md-8">
+								<select id="language" th:field="*{language}" class="form-control">
+									<option value="English">English</option>
+									<option value="Spanish">Spanish</option>
+								</select>
+							</div> 
+						</div>
+					</div>
+			
+					<!-- category -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="category">* Category</label>
+							<div class="col-md-8">
+								<select id="category" th:field="*{category.categoryId}" class="form-control">
+									<option value="0" disabled="disabled">-- Select Category --</option>
+									<option th:each="category : ${categories}" th:text="${category.name}" 
+										th:value="${category.categoryId}">
+									</option>
+								</select>
+							</div> 
+						</div>
+					</div>
+					
+					<!-- pages -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="numberOfPages">Pages</label> 
+							<div class="col-md-8">
+								<input type="number" th:field="*{numberOfPages}" th:errorclass="is-invalid"
+									 class="form-control" id="numberOfPages" placeholder="Page Number" /> 
+								<small class="form-text text-muted">Number of pages of the book.</small>
+								
+								<div class="text-danger" th:if="${#fields.hasErrors('numberOfPages')}">
+	                        		<ul>
+	                        			<li th:each="err : ${#fields.errors('numberOfPages')}" th:text="${err}" />
+	                        		</ul>
+	                    		</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- format -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="format">Format</label>
+							<div class="col-md-8">
+								<select id="format" th:field="*{format}" class="form-control">
+									<option value="haperback">Paperback</option>
+									<option value="hardcover">Hardcover</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<!-- isbn -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="isbn">ISBN</label> 
+							<div class="col-md-8">
+								<input type="text" th:field="*{isbn}" class="form-control" th:errorclass="is-invalid"
+									id="isbn" placeholder="ISBN" />
+								 <small class="form-text text-muted">ISBN of the book.</small>
+								 <div class="text-danger" th:if="${#fields.hasErrors('isbn')}">
+	                        		<ul>
+	                        			<li th:each="err : ${#fields.errors('isbn')}" th:text="${err}" />
+	                        		</ul>
+	                    		</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- shipping weight -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="shippingWeight">Shipping Weight</label>
+							<div class="col-md-8">
+								<div class="input-group">
+									<input type="number" th:field="*{shippingWeight}" step="0.01" th:errorclass="is-invalid"
+										class="form-control" id="shippingweight"
+										 placeholder="Shipping Weight" />
+									
+									<div class="input-group-append">
+										<span class="input-group-text">Ounces</span>
+									</div>
+									
+									<div class="text-danger" th:if="${#fields.hasErrors('shippingWeight')}">
+		                        		<ul>
+		                        			<li th:each="err : ${#fields.errors('shippingWeight')}" th:text="${err}" />
+		                        		</ul>
+	                    			</div>
+								</div>
+	
+								<small class="form-text text-muted">Shipping Weight of the book.</small>
+							</div>
+						</div>
+					</div>
+					
+					<!-- list price -->
+					<div class="form-group">
+						<div class="row">
+						<label class="col-md-2 control-label" for="listPrice">List Price</label>
+							<div class="col-md-8">
+								<div class="input-group">
+									<div class="input-group-prepend">
+	    								<span class="input-group-text">$</span>
+	  								</div>
+									<input type="number" th:field="*{listPrice}" step="0.01" th:errorclass="is-invalid"
+										class="form-control" id="listprice"
+										placeholder="List Price" />
+								</div>
+								<small class="form-text text-muted">List price of the book.</small>
+								<div class="text-danger" th:if="${#fields.hasErrors('listPrice')}">
+	                        		<ul>
+	                        			<li th:each="err : ${#fields.errors('listPrice')}" th:text="${err}" />
+	                        		</ul>
+	                    		</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- our price -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="ourPrice">Our Price</label>
+							<div class="col-md-8">
+								<div class="input-group">
+									<div class="input-group-prepend">
+	    								<span class="input-group-text">$</span>
+	  								</div>
+									<input type="number" th:field="*{ourPrice}" step="0.01" th:errorclass="is-invalid"
+										class="form-control" id="ourprice"
+										placeholder="Our Price" />
+								</div>
+								<small class="form-text text-muted">Our price of the book.</small>
+								<div class="text-danger" th:if="${#fields.hasErrors('ourPrice')}">
+	                        		<ul>
+	                        			<li th:each="err : ${#fields.errors('ourPrice')}" th:text="${err}" />
+	                        		</ul>
+	                    		</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- in stock number -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="inStockNumber">Number in stock</label>
+							<div class="col-md-8">
+									<input type="number" th:field="*{inStockNumber}" th:errorclass="is-invalid"
+										class="form-control" id="instocknumber"
+										placeholder="Number of in-stock copies" />
+								<small class="form-text text-muted">Number of in-stock copies.</small>
+								<div class="text-danger" th:if="${#fields.hasErrors('inStockNumber')}">
+	                        		<ul>
+	                        			<li th:each="err : ${#fields.errors('inStockNumber')}" th:text="${err}" />
+	                        		</ul>
+	                    		</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- status of book -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label">Status</label>
+							<div class="col-md-8">
+								<label><input type="radio" th:field="*{active}" value="true" /> Active </label>
+								<label><input type="radio" th:field="*{active}" value="false" /> Inactive </label>
+								
+								<small class="form-text text-muted">Whether the book is active or inactive.</small>
+							</div>
+						</div>
+					</div>
+				
+					<!-- description -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="description">Description</label> 
+							<div class="col-md-8">
+								<textarea th:field="*{description}" rows="5"
+									class="form-control" id="description"
+									placeholder="Description" >
+								</textarea> 
+								<small class="form-text text-muted">Description of the book.</small>
+								<div class="text-danger" th:if="${#fields.hasErrors('description')}">
+	                        		<ul>
+	                        			<li th:each="err : ${#fields.errors('description')}" th:text="${err}" />
+	                        		</ul>
+	                    		</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- upload image -->
+					<div class="form-group">
+						<div class="row">
+							<label class="col-md-2 control-label" for="image">Upload book image</label>
+							<div class="col-md-8">
+								<input id="image" type="file" th:field="*{image}" />
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+							<div class="col-md-6 offset-md-2">
+								<button th:if="${addBook}" type="submit" class="btn btn-success">Add Book</button>
+								<button th:if="${updateBook}" type="submit" class="btn btn-success">Update Book</button>
+								<a th:if="${updateBook}" class="btn btn-danger" th:href="@{/book/view/}+${book.bookId}">Cancel</a>
+								<a th:if="${addBook}" class="btn btn-danger" th:href="@{/book/list}">Cancel</a>
+							</div>
+						
+						
+					</div>
+			</form>
+			
+	</div>
+	
+	<div th:replace="common/header :: body-bottom-scripts"></div>
+</body>
+</html>

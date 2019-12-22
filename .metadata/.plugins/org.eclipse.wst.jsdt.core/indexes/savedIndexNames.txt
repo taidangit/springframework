@@ -1,0 +1,22 @@
+INDEX VERSION 1.4+D:\HOC TAP\HOC LAP TRINH\Lap trinh Java nang cao(Database)\SourceSpringFramework\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+4155651949.index
+1964888797.index
+2273051857.index
+3739784788.index
+1995353881.index
+3617312122.index
+49357919.index
+2989904485.index
+3293030906.index
+2134968493.index
+3774161680.index
+3038481146.index
+207483448.index
+2529171545.index
+3771878991.index
+477427524.index
+1914820305.index
+2057203085.index
+3119123827.index
+674309928.index
+699650398.index

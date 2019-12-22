@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <jsp:include page="head.jsp" />
+</head>
+<body class="goto-here">
+	<jsp:include page="header.jsp" />
+
+	<jsp:include page="navbar.jsp" />
+
+
+	<div class="hero-wrap hero-bread"
+		style="background-image: url(${pageContext.request.contextPath}/resources/frontend/images/bg_6.jpg);">
+		<div class="container">
+			<div
+				class="row no-gutters slider-text align-items-center justify-content-center">
+				<div class="col-md-9 ftco-animate text-center">
+					<p class="breadcrumbs">
+						<span class="mr-2"><a href="index.html">Home</a></span> <span>Shop</span>
+					</p>
+					<h1 class="mb-0 bread">Shop</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6 mb-5 ftco-animate">
+					<a href="${pageContext.request.contextPath}/resources/frontend/images/${product.image}" class="image-popup prod-img-bg"><img
+						src="${pageContext.request.contextPath}/resources/frontend/images/${product.image}" class="img-fluid"
+						alt="${product.name}"></a>
+				</div>
+				<div class="col-lg-6 product-details pl-md-5 ftco-animate">
+					<h3>${product.name}</h3>
+					<div class="rating d-flex">
+						<p class="text-left mr-4">
+							<a href="#" class="mr-2">5.0</a> <a href="#"><span
+								class="ion-ios-star-outline"></span></a> <a href="#"><span
+								class="ion-ios-star-outline"></span></a> <a href="#"><span
+								class="ion-ios-star-outline"></span></a> <a href="#"><span
+								class="ion-ios-star-outline"></span></a> <a href="#"><span
+								class="ion-ios-star-outline"></span></a>
+						</p>
+						<p class="text-left mr-4">
+							<a href="#" class="mr-2" style="color: #000;">100 <span
+								style="color: #bbb;">Rating</span></a>
+						</p>
+						<p class="text-left">
+							<a href="#" class="mr-2" style="color: #000;">500 <span
+								style="color: #bbb;">Sold</span></a>
+						</p>
+					</div>
+					<p class="price">
+						<span>${product.price}</span>
+					</p>
+					<p>${product.description}</p>
+					
+					<table class="table table-condensed">
+						<tbody>
+							<tr>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+					
+					</div>
+					<p>
+						<a href="cart.html" class="btn btn-black py-3 px-5 mr-2">Add
+							to Cart</a>
+					</p>
+				</div>
+			</div>
+
+		</div>
+	</section>
+
+	<jsp:include page="footer.jsp" />
+
+	<jsp:include page="script.jsp" />
+	<script>
+		$(document).ready(function(){
+
+		var quantitiy=0;
+		   $('.quantity-right-plus').click(function(e){
+		        
+		        // Stop acting like a button
+		        e.preventDefault();
+		        // Get the field name
+		        var quantity = parseInt($('#quantity').val());
+		        
+		        // If is not undefined
+		            
+		            $('#quantity').val(quantity + 1);
+
+		          
+		            // Increment
+		        
+		    });
+
+		     $('.quantity-left-minus').click(function(e){
+		        // Stop acting like a button
+		        e.preventDefault();
+		        // Get the field name
+		        var quantity = parseInt($('#quantity').val());
+		        
+		        // If is not undefined
+		      
+		            // Increment
+		            if(quantity>0){
+		            $('#quantity').val(quantity - 1);
+		            }
+		    });
+		    
+		});
+	</script>
+
+</body>
+</html>
