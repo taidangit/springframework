@@ -1,0 +1,72 @@
+
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.com">
+<head th:replace="common/header :: common-header" />
+
+<body>
+
+	<div th:replace="common/header :: navbar"></div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-8 col-md-8">
+				<h2 class="section-headline">
+					<span th:text="${user} ? ${#strings.toUpperCase(user.username)} : 'All Books'"></span>
+				</h2>
+			</div>
+			<div class="col-sm-4 col-md-4">
+				<img src="/image/logo.png" class="img-fluid" />
+			</div>
+		</div>
+		
+		<hr style="margin-top: -90px; height: 4px;" />
+		<img style="margin-top: 20px;" src="/image/wood.png" class="img-fluid" />
+		
+		<div style="margin-top: 20px;">
+			<div class="alert alert-success">
+				<h3>
+					<i class="fa fa-check" style="color: limegreen;"></i> Thank you, your order has been placed.
+				</h3>
+				<h4>
+					The estimated delivery date is <span th:text="${estimatedDeliveryDate}"></span>
+				</h4>
+			</div>
+		
+			<h3>List of Items</h3>
+			<div th:each="cartItem : ${cartItems}">
+				<hr />
+				<div class="row">
+				
+					<div class="col-sm-2 col-md-2 offset-sm-2 offset-md-2">
+	
+						<a th:href="@{/book/bookDetail/}+${cartItem.book.bookId}"> 
+							<img class="img-fluid" th:src="#{adminPath}+@{/image/books/}+${cartItem.book.bookId}+'.png'"
+								style="width: 70px;" />
+						</a>
+					</div>
+					<div class="col-sm-6 col-md-6">
+						<div style="margin-left: 50px;">
+							<a th:href="@{/book/bookDetail/}+${cartItem.book.bookId}">
+								<span th:text="${cartItem.book.title}"></span>
+							</a>
+						</div>
+					</div>
+	
+					<div class="col-sm-2 col-md-2">
+						<h5 style="color: #db3208; font-size: large;">
+							$<span th:text="${cartItem.book.ourPrice}"
+								th:style="${cartItem.book.inStockNumber}==0 ? 'text-decoration: line-through' : ''"></span>
+						</h5>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div th:replace="common/header :: footer"></div>
+	
+	<div th:replace="common/header :: body-bottom-scripts"></div>
+	
+</body>
+</html>
+

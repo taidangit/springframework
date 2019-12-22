@@ -1,0 +1,117 @@
+
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.com">
+<head th:replace="common/header :: common-header" />
+
+<body>
+
+	<div th:replace="common/header :: navbar"></div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-8 col-md-8">
+				<h2 class="section-headline">
+					<span th:text="${#strings.toUpperCase(user.username)}"></span>
+				</h2>
+			</div>
+			<div class="col-sm-4 col-md-4">
+				<img src="/image/logo.png" class="img-fluid" />
+			</div>
+		</div>
+		<hr style="margin-top: -90px; height: 4px;" />
+		<img style="margin-top: 20px;" src="/image/wood.png" class="img-fluid" />
+
+		<div class="row" style="margin-top: 20px; ">
+			<div class="col-sm-3 col-md-3">
+				<h3><label class="control-label" for="category">Category</label></h3>
+				<ul class="list-group" id="category">
+					<li class="list-group-item" th:id="0" th:classappend="${classActiveAll} ? 'active' : ''">All</li>
+					<li class="list-group-item"
+						th:each="category : ${categories}" th:text="${category.name}"  th:id="${category.categoryId}">
+					</li>
+				</ul>
+			</div>
+			
+			<div class="col-sm-9 col-md-9">
+				<div th:if="${emptyList}">
+					<div class="alert alert-warning" style="font-style: italic;">
+						Oops, no result is found. Try something else or try again later.
+					</div>
+				</div>
+				
+				<div id="emptyList"></div>
+			
+				<table class="table" id="bookList">
+					<thead>
+						<tr>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="book : ${books}">
+							<td>
+								<div class="row" style="margin-bottom: 40px;">
+									<div class="col-sm-3 col-md-3">
+										<a th:href="@{/book/bookDetail/}+${book.bookId}">
+											<img class="img-fluid" 
+												th:src="#{adminPath}+@{/image/books/}+${book.bookId}+'.png'"/>
+										</a>
+									</div>
+									<div class="col-sm-9 col-md-9">
+										<a th:href="@{/book/bookDetail/}+${book.bookId}">
+											<span class="h5" th:text="${book.title}"></span>
+										</a>
+										<br/>
+										<span th:text="${book.publicationDate}"></span>
+										<p>by <span th:text="${book.author}"></span></p>
+										<a th:href="@{/book/bookDetail/}+${book.bookId}">
+											<span th:text="${#strings.capitalize(book.format)}"></span>
+										</a>
+										<p><span th:text="${book.numberOfPages}"></span> pages</p>
+										<a th:href="@{/book/bookDetail/}+${book.bookId}">
+											<span style="font-size:x-large;color:#db3208;">$<span
+												th:text="${#numbers.formatDecimal(book.ourPrice, 1 , 'COMMA', 2, 'POINT')}"></span>
+											</span>
+										</a>
+										
+										<span style="text-decoration: line-through;">$<span
+											th:text="${#numbers.formatDecimal(book.listPrice, 1 , 'COMMA', 2, 'POINT')}"></span>
+										</span>
+										
+										<p th:utext="${#strings.abbreviate(book.description, 200)}"></p>
+									</div>
+								</div>
+								
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+            
+			</div>
+			
+		</div>
+	</div>
+	
+	<div th:replace="common/header :: footer"></div>
+	
+	<div th:replace="common/header :: body-bottom-scripts"></div>
+	
+	<script>
+		$(document).ready(function() {
+			$('#bookList').DataTable({
+				"lengthMenu":[5,10,15,20],
+				"ordering":false,
+				stateSave: true
+			});
+			
+			$("#bookList").on('page.dt', function() {
+				$('html, body').animate({
+					scrollTop: $('#bookList').offset().top
+				}, 200);
+			});
+		});
+	</script>
+</body>
+</html>
+

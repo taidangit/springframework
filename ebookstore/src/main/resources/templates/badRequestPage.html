@@ -1,0 +1,36 @@
+
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.com">
+<head th:replace="common/header :: common-header" />
+
+<body>
+
+	<div th:replace="common/header :: navbar"></div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-8 col-md-8">
+				<h2 class="section-headline">
+					<span>User Account</span>
+				</h2>
+			</div>
+			<div class="col-sm-4 col-md-4">
+				<img src="/image/logo.png" class="img-fluid" />
+			</div>
+		</div>
+		<hr style="margin-top: -90px; height: 4px;" />
+		<img style="margin-top: 20px;" src="/image/wood.png" class="img-fluid" />
+
+		<div class="row" style="margin-top: 20px; ">
+			<div class="col-md-9 offset-md-3">
+				<h5>Bad request. The request path is invalid. Click <a th:href="@{/}">here</a> to return to the home page.</h5>
+			</div>
+		</div>
+	</div>
+		
+	<div th:replace="common/header :: footer"></div>
+	
+	<div th:replace="common/header :: body-bottom-scripts"></div>
+</body>
+</html>
+

@@ -1,0 +1,170 @@
+
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.com" 
+				xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head th:fragment="common-header">
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author"
+	content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+<meta name="generator" content="Jekyll v3.8.5">
+<title>My Bookstore</title>
+
+<!-- Bootstrap core CSS -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+
+<!-- Font Awesome -->
+<link th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}"
+	rel="stylesheet" />
+	
+<!-- data table -->
+<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+
+<!-- Custom styles for this template -->
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+
+<link rel="icon" href="/image/apple-touch-icon.png" />
+</head>
+<body>
+	<div th:fragment="navbar">
+		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+			<a class="navbar-brand" th:href="@{/}">MY BOOKSTORE</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarCollapse" aria-controls="navbarCollapse"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active"><a class="nav-link" th:href="@{/}">HOME
+							<span class="sr-only">(current)</span>
+					</a></li>
+
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="dropdown09"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">BOOKS</a>
+						<div class="dropdown-menu" aria-labelledby="dropdown09">
+							<a class="dropdown-item" th:href="@{/book/bookshelf}">Browse the bookshelf</a> <a
+								class="dropdown-item" th:href="@{/hours}">Store hours &#38; Directions</a>
+							<a class="dropdown-item" th:href="@{/faq}">FAQ</a>
+						</div></li>
+					
+					<!-- Search -->
+					<!-- <form th:action="@{/book/searchBook}" method="POST" class="form-inline mt-2 mt-md-0">
+						<input class="form-control mr-sm-2" type="text" th:name="keyword"
+							placeholder="Book title" aria-label="Search">
+						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+					</form> -->
+					
+					<form class="form-inline mt-2 mt-md-0">
+						<input class="form-control mr-sm-2" type="text" th:name="keyword"
+							placeholder="Book title" aria-label="Search">
+						<button th:id="btnSearch" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+					</form>
+				</ul>
+
+				<ul class="nav navbar-nav navbar-right ">
+					 <li class="nav-item">
+                    	<span class="nav-link" sec:authorize="isAuthenticated()">
+                    		WELCOME: <span style="text-transform: uppercase" sec:authentication="name"></span>
+                    	</span>
+                	</li>
+					<li class="nav-item">
+						<a sec:authorize="isAnonymous()" th:href="@{/login}" class="nav-link">
+							<i title="SIGN IN" class="fa fa-sign-in"></i>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a sec:authorize="isAuthenticated()" th:href="@{/myProfile}" class="nav-link">
+							<i title="MY PROFILE" class="fa fa-user"></i>
+						</a>
+						</li>
+					<li class="nav-item">
+						<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="nav-link">
+							<i title="SIGN OUT" class="fa fa-sign-out"></i>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a th:href="@{/shoppingCart/cart}" class="nav-link">
+							<i title="SHOPPING CART" class="fa fa-shopping-cart"></i>
+						</a>
+					</li>
+				</ul>
+
+			</div>
+		</nav>
+	</div>
+
+	<div th:fragment="footer">
+		<br />
+		<br />
+		<footer>
+			<div class="row">
+				<div class="col-sm-3 col-md-3 footerleft">
+					<div class="logofooter">
+						<a th:href="@{/}"><img class="img-fluid"
+							src="/image/logo.png" style="width: 200px;" /></a>
+					</div>
+					<p>
+						Le's Independent Book Store. <br />Serving our customers with the
+						best.
+					</p>
+				</div>
+				<div class="col-sm-3 col-md-3 paddingtop-bottom">
+					<h6 class="heading7">CONTACT</h6>
+					<ul class="post">
+						<li><i class="fa fa-map-pin"></i> 123 XXX Ave<br /> Boston MA, USA 02112</li>
+						<li><i class="fa fa-phone"></i> Phone (USA) : +1 999 999 9999</li>
+						<li><i class="fa fa-envelope"></i> E-mail : info@lebookstore.com</li>
+					</ul>
+				</div>
+				<div class="col-sm-3 col-md-3 paddingtop-bottom">
+					<h6 class="heading7">LINKS</h6>
+					<ul class="footer-ul">
+						<li><a href="#"> Privacy Policy</a></li>
+						<li><a href="#"> Terms &#38; Conditions</a></li>
+						<li><a href="#"> Frequently Ask Questions</a></li>
+					</ul>
+				</div>
+				<div class="col-sm-3 col-md-3 paddingtop-bottom">
+					<h6 class="heading7">STORE HOURS</h6>
+					<div class="post">
+						<p>Monday - Saturday: 9am - 11pm</p>
+						<p>Sunday: 10am - 10pm</p>
+					</div>
+				</div>
+			</div>
+		</footer>
+
+		<div class="copyright">
+			<div class="row">
+				<div class="col-sm-6 col-md-6">
+					<p>© 2019 - All Rights Reserved</p>
+				</div>
+				<div class="col-sm-6 col-md-6">
+					<ul class="bottom_ul">
+						<li><a href="#">About us</a></li>
+						<li><a href="#">Blog</a></li>
+						<li><a href="#">Faq's</a></li>
+						<li><a href="#">Contact us</a></li>
+						<li><a href="#">Site Map</a></li>
+					</ul>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	
+	
+	<div th:fragment="body-bottom-scripts">
+		<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+		<script th:src="@{/js/bootstrap.min.js}"></script>
+		<script th:src="@{/js/jquery.dataTables.min.js}"></script>
+		<script th:src="@{/js/scripts.js}"></script>
+	</div>
+
+</body>
+</html>
