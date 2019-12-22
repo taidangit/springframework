@@ -1,0 +1,168 @@
+<div class="container">
+	<div class="row">
+		<div class="col-sm-8 col-md-8">
+			<h2 class="section-headline">
+				<span>My Account</span>
+			</h2>
+		</div>
+		<div class="col-sm-4 col-md-4">
+			<img src="assets/image/logo.png" class="img-fluid" />
+		</div>
+	</div>
+	<hr style="margin-top: -90px; height: 4px;" />
+	<img style="margin-top: 20px;" src="assets/image/wood.png" class="img-fluid" />
+
+	<div class="row" style="margin-top: 20px; ">
+		<div class="col-md-8 offset-md-2">
+			
+			<mat-tab-group>
+			  	<mat-tab label="Create new account">
+			  		<div class="card" style="border: none;">
+						<div class="card-body" style="background-color: #ededed; margin-top: 20px;">
+							
+							<div class="alert alert-danger" *ngIf="usernameExists">
+								Username already exists. Choose a difference one.
+							</div> 
+								
+							<div class="alert alert-danger" *ngIf="emailExists">
+								Email already exists. Choose a difference one.
+							</div>
+								
+							<div class="alert alert-success" *ngIf="emailSent">
+								An email has been sent to the email address you just registered.
+								Please validate your email address and update your password
+								information.
+							</div>
+								
+							<form [formGroup]="formNewAccount" (ngSubmit)="onNewAccount()">
+								<div class="form-group">
+									<label class="control-label">* Username: </label>
+									<input type="text" formControlName="username" class="form-control" [(ngModel)]="newUser.username" name="username" />
+                					
+                					<app-control-message [control]="formNewAccount.controls.username"></app-control-message>
+
+                					<p style="color: #828282">Enter your username here.</p>
+								</div>
+								
+								<div class="form-group">		
+									<label class="control-label">* First Name: </label>
+											
+									<input type="text" formControlName="firstName" class="form-control" [(ngModel)]="newUser.firstName" name="firstName"  />	
+	                    		
+									<app-control-message [control]="formNewAccount.controls.firstName"></app-control-message>
+
+	                    			<p style="color: #828282">Enter your first name here.</p>
+								</div>
+										
+								<div class="form-group">
+									<label class="control-label">* Last Name: </label>
+									<input type="text" formControlName="lastName" class="form-control" [(ngModel)]="newUser.lastName" name="lastName" />
+                					
+                					<app-control-message [control]="formNewAccount.controls.lastName"></app-control-message>
+
+                					<p style="color: #828282">Enter your last name here.</p>
+								</div>
+											
+								<div class="form-group">
+									<label class="control-label">* Phone Number: </label>
+									<input type="text" formControlName="phone" class="form-control" [(ngModel)]="newUser.phone" name="phone" />
+                					
+                					<app-control-message [control]="formNewAccount.controls.phone"></app-control-message>
+
+                					<p style="color: #828282">Enter your phone number here.</p>
+								</div>
+
+
+								<div class="form-group">
+									<label class="control-label">* Email Address: </label>
+									<input type="text" formControlName="email" class="form-control" [(ngModel)]="newUser.email" name="email" />
+
+									<app-control-message [control]="formNewAccount.controls.email"></app-control-message>
+
+									<p style="color: #828282">
+										A valid email address. All
+										emails from the system will be sent to this address. The
+										email address is not made public and will only be used if
+										you wish to receive a new password or wish to receive
+										certain notification.
+									</p>
+								</div>
+								
+								<div class="form-group">
+									<button type="submit" [disabled]="!formNewAccount.valid" class="btn btn-primary">Submit</button>   
+									<button style="margin: 5px;" (click)="onResetForm()" class="btn btn-danger">Reset</button>
+								</div>
+							</form>
+						
+						</div>
+					</div>
+			  	</mat-tab>
+			  	<mat-tab label="Login">
+			  		<div class="card-body" style="background-color: #ededed; margin-top: 20px;">	
+						<div class="alert alert-danger" *ngIf="LoginError">
+							Incorrect username or password.
+						</div>
+								
+						<form [formGroup]="formLogin" (ngSubmit)="onLogin()">
+							<div class="form-group">
+								<label class="control-label">* Username: </label> 
+								<input type="text" formControlName="username" class="form-control" [(ngModel)]="credential.username" name="username"  />
+
+								<app-control-message [control]="formLogin.controls.username"></app-control-message>
+
+								<p style="color: #828282">Enter your username here.</p>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label">* Password: </label> 
+								<input type="password" formControlName="password" class="form-control"
+									 name="password" [(ngModel)]="credential.password" />
+
+								<app-control-message [control]="formLogin.controls.password"></app-control-message>
+
+								<p style="color: #828282">
+									Enter the password that accompanies your username.
+								</p>
+							</div>
+
+							<button type="submit" [disabled]="!formLogin.valid" class="btn btn-primary">Log in</button>
+						</form>
+					</div>
+				</mat-tab>
+			
+			  	<mat-tab label="Forget password">
+			  		<div class="card" style="border: none;">
+						<div class="card-body"
+							style="background-color: #ededed; margin-top: 20px;">
+								
+							<div *ngIf="emailNotExists" class="alert alert-danger">
+								Email doesn't exist.
+							</div>
+							
+							<div *ngIf="forgetPasswordEmailSent" class="alert alert-success">
+								Email sent.
+							</div>
+								
+							<form [formGroup]="formForgetPassword" (ngSubmit)="onForgetPassword()">
+								<div class="form-group">
+									<label class="control-label">* Your Email: </label>
+									<input type="text" formControlName="email" class="form-control" [(ngModel)]="recoverEmail" name="email" /> 
+
+									<app-control-message [control]="formForgetPassword.controls.email"></app-control-message>
+
+									<p style="color: #828282">
+										Enter your registered email address here.
+									</p>
+								</div>
+
+								<button type="submit" [disabled]="!formForgetPassword.valid" class="btn btn-primary">Submit</button>
+							</form>
+						</div>
+					</div>
+			  	</mat-tab>
+			</mat-tab-group>
+			
+		</div>
+	</div>
+
+</div>

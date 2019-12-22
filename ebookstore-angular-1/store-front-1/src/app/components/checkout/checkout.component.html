@@ -1,0 +1,416 @@
+<div class="container">
+	<div class="row">
+		<div class="col-sm-8 col-md-8">
+			<h2 class="section-headline">
+				<span>Checkout</span>
+			</h2>
+		</div>
+		<div class="col-sm-4 col-md-4">
+			<img src="assets/image/logo.png" class="img-fluid" />
+		</div>
+	</div>
+
+	<hr style="margin-top: -90px; height: 4px;" />
+	<img style="margin-top: 20px;" src="assets/image/wood.png" class="img-fluid" />
+	
+	<div style="margin-top: 50px;">
+		<form (ngSubmit)="onOrder()">
+			<div class="row">
+				<!-- Left Panel -->
+				<div class="col-sm-4 col-md-4">
+					<div class="card">
+						<div class="card-body">
+							<button type="submit" class="btn btn-warning btn-block">Place your order</button>
+							<p style="font-size:smaller;">By placing your order, you agree to our bookstore <a href="#">privacy</a> notice and <a href="#">conditions</a> of use.
+							</p>
+							<hr/>
+							<h4>Order Summary</h4>
+							<div class="row">
+								<div class="col-sm-7 col-md-7 text-left">
+									Total before tax:
+								</div>
+								<div class="col-sm-5 col-md-5 text-right">
+									<span>{{ shoppingCart.grandTotal | currency:'USD':'symbol':'1.2-2' }}</span>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-sm-7 col-md-7 text-left">
+									Estimated tax:
+								</div>
+								<div class="col-sm-5 col-md-5 text-right">
+									<span>{{ shoppingCart.grandTotal*0.06 | currency:'USD':'symbol':'1.2-2' }}</span>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-sm-7 col-md-7 text-left">
+									<h5 style="color:darkred;"><strong>Order Total: </strong></h5>
+								</div>
+								<div class="col-sm-5 col-md-5 text-right">
+									<h5>
+										<strong style="color:darkred;">
+											<span>{{ shoppingCart.grandTotal+shoppingCart.grandTotal*0.06 | currency:'USD':'symbol':'1.2-2'}}</span>
+										</strong>
+									</h5>
+								</div>
+							</div>
+							
+						</div>
+						<div class="card-footer">Shipping and handling haven't applied.</div>
+					</div>
+					
+				</div>
+
+				<!-- Checkout Info -->
+				<div class="col-sm-8 col-md-8">
+					<div *ngIf="missingRequiredField" class="alert alert-warning">
+						There are some fields missing. Field with * is required.
+					</div>
+					
+					<mat-horizontal-stepper #stepper>
+					  	<mat-step>
+					    	<ng-template matStepLabel>Shipping Address</ng-template>
+					    
+						    <table style="color: white;" class="table" *ngIf="!emptyShippingList">
+								<thead>
+									<tr>
+										<th>Available Shipping Address</th>
+										<th>Operations</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let userShipping of userShippings">
+										<td>
+											<span>	
+												{{ userShipping.street }},
+												{{ userShipping.city }},
+												{{ userShipping.state }}
+											</span>
+										</td>
+										<td>
+											<a mat-button (click)="onSetShippingAddress(userShipping)">use this address</a>
+										</td>
+									</tr>
+								</tbody>
+							</table> 
+						
+							<div class="form-group">
+								<label class="control-label" for="shippingAddressName">* Name</label> 
+								<input type="text" [(ngModel)]="shippingAddress.shippingAddressName" name="shippingAddressName" class="form-control" id="shippingAddressName" placeholder="Receiver Name"/>
+						
+							</div>
+											
+							<div class="form-group">
+								<label class="control-label" for="shippingAddressStreet">* Street Name</label> 
+								<input type="text" [(ngModel)]="shippingAddress.shippingAddressStreet" name="shippingAddressStreet" class="form-control" id="shippingAddressStreet" placeholder="Shipping Street" />
+								
+							</div>
+							
+							<div class="form-group">
+								<label class="control-label" for="shippingAddressCountry">* Country</label> 
+								<input type="text" [(ngModel)]="shippingAddress.shippingAddressCountry" name="shippingAddressCountry" class="form-control" id="shippingAddressCountry" placeholder="Shipping Country" />
+							</div>
+										
+							<div class="row">
+								<div class="col-sm-4 col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="shippingAddressCity">* City</label>
+										 <input type="text" class="form-control" [(ngModel)]="shippingAddress.shippingAddressCity" name="shippingAddressCity" id="shippingAddressCity" placeholder="Shipping City" />
+										
+									</div>
+								</div>
+								
+								<div class="col-sm-4 col-md-4">
+									<div class="form-group">
+										<label class="control=label" for="shippingAddressState">* State</label> 
+										<select [(ngModel)]="shippingAddress.shippingAddressState" name="shippingAddressState" id="shippingAddressState" class="form-control">
+											<option value="" disabled="disabled">-- State --</option>
+											<option *ngFor="let state of states" [value]="state">{{ state }}</option>
+										</select>
+									</div>
+								</div>
+								
+								<div class="col-sm-4 col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="shippingAddressZipcode">* Zipcode</label>
+										 <input type="text" [(ngModel)]="shippingAddress.shippingAddressZipcode" name="shippingAddressZipcode" class="form-control" id="shippingAddressZipcode" placeholder="Shipping Zipcode" />
+																			
+									</div>
+								</div>
+							</div>
+
+					  	</mat-step>
+
+					  	<mat-step>
+					      	<ng-template matStepLabel> Payment Information</ng-template>
+					     	
+							<table style="color: white;" class="table" *ngIf="!emptyPaymentList">
+								<thead>
+									<tr>
+										<th>Available Credit Card</th>
+										<th>Operations</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let userPayment of userPayments">
+										<td>
+											<span>	
+												{{ userPayment.cardName }}
+											</span>
+										</td>
+										<td>
+											<a mat-button (click)="onSetPaymentMethod(userPayment)">use this payment</a>
+										</td>
+									</tr>
+								</tbody>
+							</table> 
+
+							<!-- Credit Card Information -->
+							<div class="form-group">
+								<label class="control-label" for="carName">* Give a name for your card:</label>
+								<input type="text" [(ngModel)]="payment.cardName" name="cardName" class="form-control" id="cardName"
+									placeholder="Card Name" />
+								
+							</div>
+										
+							<img src="assets/image/creditcard.png" class="img-fluid" /><br><br>
+							
+							<div class="form-group">
+								<label class="control-label" for="cardType">* Select Card Type:</label>
+								<select class="form-control" id="cardType" [(ngModel)]="payment.type" name="type">
+									<option value="" disabled="disabled">-- Card Type --</option>
+									<option value="visa">Visa</option>
+									<option value="Mastercard">Mastercard</option>
+									<option value="Discover">Discover</option>
+									<option value="American Express">American Express</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label class="control-label" for="cardHolder">* Card Holder Name:</label>
+								<input type="text" [(ngModel)]="payment.holderName" name="holderName" class="form-control" id="cardHolder"
+									placeholder="Card Holder Name" />
+							</div>
+							<div class="form-group">
+								<label class="control-label" for="cardNumber">* Card Number:</label>
+								<div class="input-group">
+									<input type="text" [(ngModel)]="payment.cardNumber" name="cardNumber" class="form-control" id="cardNumber" 
+										placeholder="Valid Card Number" />
+									<div class="input-group-append">
+										<i class="input-group-text fa fa-credit-card"></i>
+									</div>
+								</div>
+							</div>
+									
+							<div class="row">
+								<div class="col-sm-7 col-md-7">
+									<div class="form-group">
+										
+										<div class="row">
+											<div class="col-sm-6 col-md-6">
+												<label class="control-label" for="expiryMonth">* Expiration Month</label>
+												<select class="form-control" name="expiryMonth"[(ngModel)]="payment.expiryMonth" id="expiryMonth">
+													<option value="" disabled="disabled">-- Month --</option>
+													<option value="1">Jan (01)</option>
+                                                   	<option value="2">Feb (02)</option>
+                                                   	<option value="3">Mar (03)</option>
+                                                   	<option value="4">Apr (04)</option>
+                                                  	<option value="5">May (05)</option>
+                                                  	<option value="6">June (06)</option>
+                                                   	<option value="7">July (07)</option>
+                                                   	<option value="8">Aug (08)</option>
+                                                   	<option value="9">Sep (09)</option>
+                                                   	<option value="10">Oct (10)</option>
+                                                   	<option value="11">Nov (11)</option>
+                                                   	<option value="12">Dec (12)</option>
+												</select>
+											</div>
+											<div class="col-sm-6 col-md-6">
+												<label class="control-label" for="expiryYear">* Expiration Year</label>
+												<select class="form-control" name="expiryYear"
+												[(ngModel)]="payment.expiryYear" id="expiryYear">
+													<option value="" disabled="disabled">-- Year --</option>
+													<option value="2017">2017</option>
+													<option value="2018">2018</option>
+													<option value="2019">2019</option>
+                                                    <option value="2020">2020</option>
+                                                    <option value="2021">2021</option>
+                                                    <option value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                </select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-5 col-md-5">
+									<div class="form-group">
+										<label class="control-label" for="cardCVC">CVC Code</label>
+										<input id="cardCVC" type="text" name="cvc" [(ngModel)]="payment.cvc" class="form-control"
+											placeholder="cvc" />
+									</div>
+								</div>
+							</div>
+
+							<!-- Billing Address -->
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" (click)="onSetBillingSameAsShipping($event.target.checked)"/> The same as shipping address
+								</label>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label" for="billingAddressName">* Name</label> 
+								<input type="text" [(ngModel)]="billingAddress.billingAddressName" name="billingAddressName" class="form-control" id="billingAddressName" placeholder="Receiver Name"/>
+							</div>
+										
+							<div class="form-group">
+								<label class="control-label" for="billingAddressStreet">* Street Name</label> 
+								<input type="text" [(ngModel)]="billingAddress.billingAddressStreet" name="billingAddressStreet" class="form-control" id="billingStreet" placeholder="Billing Street" />
+								
+							</div>
+							
+							<div class="form-group">
+								<label class="control-label" for="billingAddressCountry">* Country</label> 
+								<input type="text" [(ngModel)]="billingAddress.billingAddressCountry" name="country" class="form-control" id="billingAddressCountry" placeholder="Billing country" />
+									
+							</div>
+						
+							<div class="row">
+								<div class="col-sm-4 col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="billingAddressCity">* City</label>
+										 <input type="text" class="form-control" [(ngModel)]="billingAddress.billingAddressCity" name="billingAddressCity" id="billingCity" placeholder="Billing city" />
+									</div>
+								</div>
+								
+								<div class="col-sm-4 col-md-4">
+									<div class="form-group">
+										<label class="control=label" for="billingAddressState">* State</label> 
+										<select [(ngModel)]="billingAddress.billingAddressState" name="state" id="billingState" class="form-control">
+											<option value="" disabled="disabled">-- State --</option>
+											<option *ngFor="let state of states" [value]="state">{{ state }}</option>
+										</select>
+									</div>
+								</div>
+								
+								<div class="col-sm-4 col-md-4">
+									<div class="form-group">
+										<label class="control-label" for="billingAddressZipCode">* Zipcode</label>
+										 <input type="text" [(ngModel)]="billingAddress.billingAddressZipcode" name="billingAddressZipCode" class="form-control" id="billingZipCode" placeholder="Billing Zipcode" />
+									</div>
+								</div>
+							</div>
+							
+					  	</mat-step>
+
+					  	<mat-step>
+					    	<ng-template matStepLabel>Review Items and Shipping</ng-template>
+
+					    	<h5>Choose your shipping method:</h5>
+							<div class="radio">
+								<label> 
+									<input type="radio" name="shippingMethod" [(ngModel)]="shippingMethod" value="groundShipping" /> Ground Shipping
+								</label>
+							</div>
+
+							<div class="radio">
+								<label> 
+									<input type="radio" name="shippingMethod"
+										[(ngModel)]="shippingMethod" value="premiumShipping" /> Premium Shipping
+								</label>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-6 col-md-6">
+									<h5>Products</h5>
+								</div>
+								<div class="col-sm-2 col-md-2">
+									<h5>Price</h5>
+								</div>
+								<div class="col-sm-2 col-md-2">
+									<h5>Quantity</h5>
+								</div>
+								<div class="col-sm-2 col-md-2">
+									<h5>SubTotal</h5>
+								</div>
+							</div>
+
+							<!-- display products in cart -->
+							<div *ngFor="let cartItem of cartItems">
+								<hr />
+								<div class="row">
+									<div class="col-sm-2 col-md-2">
+										<a [routerLink]="['/bookDetail', cartItem.book.bookId]"> 
+											<img class="img-fluid" width="70px;" src="{{ serverPathImage }}/image/books/{{ cartItem.book.bookId }}.png" />
+										</a>
+									</div>
+									<div class="col-sm-4 col-md-4">
+										<div style="margin-left:50px;">
+											<a [routerLink]="['/bookDetail', cartItem.book.bookId]">
+												<span>{{ cartItem.book.title }}</span>
+											</a>
+											<p *ngIf="cartItem.book.inStockNumber > 10" style="color: green;">In Stock</p>
+
+											<p *ngIf="cartItem.book.inStockNumber > 0 && cartItem.book.inStockNumber < 10" style="color: green;">
+												Only <span>{{ cartItem.book.inStockNumber }}</span> In Stock
+											</p>
+											<p *ngIf="cartItem.book.inStockNumber == 0" style="color: darkred;">Product Unavailable</p>
+
+											<a (click)="onRemoveCartItem(cartItem.cartItemId)" mat-button><i class="fa fa-times"></i>
+											</a>
+										</div>
+									</div>
+
+									<div class="col-sm-2 col-md-2">
+										<h5 style="color: #db3208; font-size: large;">
+											<span [ngStyle]="{'text-decoration' : cartItem.book.inStockNumber == 0 ? 'line-through' : ''}" >{{ cartItem.book.ourPrice | currency:'USD':'symbol':'1.2-2' }}
+											</span>
+										</h5>
+									</div>
+	
+									<div class="col-sm-2 col-md-2">
+										<h5 style="font-size: large;">{{ cartItem.qty }}</h5>
+									</div>
+									
+									<div class="col-sm-2 col-md-2">
+										<h5 style="color: #db3208; font-size: large;">
+											<span >{{ cartItem.subtotal | currency:'USD':'symbol':'1.2-2' }} </span>
+										</h5>
+									</div>
+									
+								</div>
+								
+							</div>
+
+							<hr />		
+							<h4 class="text-right">
+								<strong style="font-size: large; color: white;">Order Total 
+									(<span>{{ cartItems.length }}</span> items):
+								</strong> 
+								<strong>
+									<span style="color: #db3208; font-size: large;"><span>{{ shoppingCart.grandTotal | currency:'USD':'symbol':'1.2-2' }}</span></span>
+								</strong>
+							</h4>
+							<br />
+							<br />
+							<button type="submit" class="btn btn-warning btn-block">Place your order</button>
+							<p style="font-size: smaller; text-align: center;">
+								By placing your order, you agree to Le's Bookstore <a href="#">privacy</a>
+								notice and <a href="#">conditions</a> of use.
+							</p>
+
+					  	</mat-step>
+					</mat-horizontal-stepper>
+
+				</div>
+			</div>
+		</form>
+		
+	</div>
+</div>

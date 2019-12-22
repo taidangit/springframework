@@ -1,0 +1,135 @@
+<div class="container">
+	<div class="row">
+		<div class="col-sm-8 col-md-8">
+			<h2 class="section-headline">
+				<span>Shopping Cart</span>
+			</h2>
+		</div>
+		<div class="col-sm-4 col-md-4">
+			<img src="assets/image/logo.png" class="img-fluid" />
+		</div>
+	</div>
+
+	<hr style="margin-top: -90px; height: 4px;" />
+	<img style="margin-top: 20px;" src="assets/image/wood.png" class="img-fluid" />
+	
+	<div style="margin-top: 20px; ">
+		<div class="row">
+			<div class="col-sm-6 col-md-6 text-left">
+				<a class="btn btn-warning" [routerLink]="['/bookList']"><i class="fa fa-long-arrow-left mr-1"></i>Continue Shopping</a>
+			</div>
+					
+			<div class="col-sm-6 col-md-6 text-right">
+				<a class="btn btn-primary" [routerLink]="['/checkout']">Check Out<i class="fa fa-long-arrow-right ml-1"></i></a>
+			</div>
+		</div>
+		<br>
+
+		<div *ngIf="cartItemUpdated" class="alert alert-success">
+			Cart item updated successfully!
+		</div>
+
+		<div *ngIf="notEnoughStock" class="alert alert-warning">
+			Oops, some of the products don't have enough stock. Please update
+			product quantity.
+		</div>
+				
+		<div *ngIf="emptyCart" class="alert alert-warning">
+			Oops, your cart is empty. See if you can find what you like in the
+			bookshelf and add them to cart.
+		</div>
+					
+		<div class="row" style="margin-top: 50px;">
+			<div class="col-sm-6 col-md-6">
+				<h5>Products</h5>
+			</div>
+			<div class="col-sm-2 col-md-2">
+				<h5>Price</h5>
+			</div>
+			<div class="col-sm-2 col-md-2">
+				<h5>Quantity</h5>
+			</div>
+			<div class="col-sm-2 col-md-2">
+				<h5>SubTotal</h5>
+			</div>
+		</div>
+		<hr />
+		<!--**************** display products in cart ****************-->
+		
+		<div *ngFor="let cartItem of cartItems">
+			<div class="row">
+				<div class="col-sm-2 col-md-2">
+					<a [routerLink]="['/bookDetail', cartItem.book.bookId]"> 
+						<img class="img-fluid" width="70px;" src="{{ serverPathImage }}/image/books/{{ cartItem.book.bookId }}.png" />
+					</a>
+				</div>
+				
+				<div class="col-sm-4 col-md-4">
+					<div style="margin-left:50px;">
+						<a [routerLink]="['/bookDetail', cartItem.book.bookId]">
+							<span>{{ cartItem.book.title }}</span>
+						</a>
+						<p *ngIf="cartItem.book.inStockNumber > 10" style="color: green;">In Stock</p>
+						<p *ngIf="cartItem.book.inStockNumber < 10 && cartItem.book.inStockNumber > 0" style="color: green;">
+							Only <span>{{ cartItem.book.inStockNumber }}</span> In Stock
+						</p>
+						<p *ngIf="cartItem.book.inStockNumber == 0" style="color: darkred;">Product Unavailable</p>
+						<a (click)="onRemoveCartItem(cartItem.cartItemId)" mat-button><i class="fa fa-times"></i>
+						</a>
+						
+					</div>
+					
+				</div>
+				
+				<div class="col-sm-2 col-md-2">
+					<h5 style="color: #db3208; font-size: large;">
+						<span [ngStyle]="{'text-decoration' : cartItem.book.inStockNumber == 0 ? 'line-through' : ''}" >{{ cartItem.book.ourPrice | currency:'USD':'symbol':'1.2-2' }}
+						</span>
+					</h5>
+				</div>
+
+				<div class="col-sm-2 col-md-2">
+				
+					<input type="number" min="1"
+						[disabled]="cartItem.book.inStockNumber == 0"
+						class="form-control" [(ngModel)]="cartItem.qty" 
+						(ngModelChange)="cartItem.toUpdate=true" />
+						
+					<button *ngIf="cartItem.toUpdate" (click)="onUpdateCartItem(cartItem)"
+						class="btn btn-warning btn-sm"><i class="fa fa-refresh"></i>
+					</button>
+
+				</div>
+			
+				<div class="col-sm-2 col-md-2">
+					<h5 style="color: #db3208; font-size: large;">
+						<span >{{ cartItem.subtotal | currency:'USD':'symbol':'1.2-2' }} </span>
+					</h5>
+				</div>
+			</div>
+			<hr/>
+			
+		</div>
+		
+		<div class="row">
+			<div class="col-sm-6 col-md-6 text-left">
+				<button class="btn btn-danger" (click)="onRemoveAllCartItem()">
+	                  <i class="fa fa-remove"></i>
+	                  Clear Shopping Cart
+        		</button>
+			</div>
+
+			<div class="col-sm-6 col-md-6 text-right">
+				<h4>
+					<strong style="font-size: large;">Total Price (<span>{{ cartItems.length }}</span> items):</strong> &nbsp;
+					<strong>
+						<span style="color: #db3208; font-size: large;"><span>{{ shoppingCart.grandTotal | currency:'USD':'symbol':'1.2-2' }}</span>
+						</span>
+					</strong>
+				</h4>
+			</div>
+		
+		</div>
+
+	</div>
+</div>

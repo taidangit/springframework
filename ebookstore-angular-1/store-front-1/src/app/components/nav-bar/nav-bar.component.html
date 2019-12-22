@@ -1,0 +1,63 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+	<a class="navbar-brand" [routerLink]="['/home']">MY BOOKSTORE</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse"
+		data-target="#navbarCollapse" aria-controls="navbarCollapse"
+		aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbarCollapse">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active"><a class="nav-link" [routerLink]="['/home']">HOME
+					<span class="sr-only">(current)</span>
+			</a></li>
+
+			<li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" [matMenuTriggerFor]="books">BOOKS</a>
+				
+				<mat-menu #books="matMenu">
+					<a style="text-decoration: none;" [appMenu] mat-menu-item [routerLink]="['/bookList']">Browse the bookshelf</a> 
+					<a  style="text-decoration: none;" [appMenu] mat-menu-item [routerLink]="['/hours']">Store hours &#38; Directions</a>
+					<a  style="text-decoration: none;" [appMenu] mat-menu-item [routerLink]="['/faq']">FAQ</a>
+				</mat-menu>
+				
+			</li>
+
+			<form style="margin-left: 20px;" (ngSubmit)="onSearchByTitle()" class="form-inline mt-2 mt-md-0">
+				<input class="form-control mr-sm-2" type="text" name="keyword" [(ngModel)]="keyword" placeholder="Enter book title..." >
+				<button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+			</form>
+		</ul>
+
+		<ul class="nav navbar-nav navbar-right">
+			 <li class="nav-item">
+            	<span class="nav-link" >
+            		
+            	</span>
+        	</li>
+			<li class="nav-item" *ngIf="!loggedIn">
+				<a class="nav-link" [routerLink]="['/myAccount']">
+					<i title="SIGN IN" class="fa fa-sign-in"></i>
+				</a>
+			</li>
+			<li class="nav-item" *ngIf="loggedIn">
+				<a class="nav-link" [routerLink]="['/myProfile']">
+					<i title="MY PROFILE" class="fa fa-user"></i>
+				</a>
+			</li>
+			
+			<li class="nav-item" *ngIf="loggedIn">
+				<a class="nav-link" (click)="logout()">
+					<i title="SIGN OUT" class="fa fa-sign-out"></i>
+				</a>
+			</li>
+			<li class="nav-item" >
+				<a class="nav-link" [routerLink]="['/shoppingCart']">
+					<i title="SHOPPING CART" class="fa fa-shopping-cart"></i>
+				</a>
+			</li>
+		</ul>
+
+	</div>
+</nav>
+<br/>
+<br/>
+<br/>

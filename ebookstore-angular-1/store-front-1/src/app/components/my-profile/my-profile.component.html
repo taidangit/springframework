@@ -1,0 +1,616 @@
+<div class="container">
+	<div class="row">
+		<div class="col-sm-8 col-md-8">
+			<h2 class="section-headline">
+				<span>My Profile</span>
+			</h2>
+		</div>
+		<div class="col-sm-4 col-md-4">
+			<img src="assets/image/logo.png" class="img-fluid" />
+		</div>
+	</div>
+	<hr style="margin-top: -90px; height: 4px;" />
+	<img style="margin-top: 20px;" src="assets/image/wood.png" class="img-fluid" />
+
+	<div *ngIf="!dataFetched" class="row" style="margin-top: 20px; ">
+		<div class="col-md-2 offset-md-5">
+			<mat-spinner></mat-spinner>
+		</div>
+	</div>
+
+	<div *ngIf="dataFetched" class="row" style="margin-top: 20px; ">
+		<div class="col-md-8 offset-md-2">
+			
+			<mat-tab-group>
+			  	<mat-tab label="Edit">
+			  		<div class="card" style="border: none;">
+						<div class="card-body" style="background-color: #ededed; margin-top: 20px;">
+							<div class="alert alert-danger" *ngIf="usernameExists">
+								Username already exists. Choose a difference one.
+							</div> 
+							
+							<div class="alert alert-danger" *ngIf="emailExists">
+								Email already exists. Choose a difference one.
+							</div>
+							
+							<div class="alert alert-danger" *ngIf="incorrectPassword">
+								<strong>Incorrect Password!</strong> Please enter the correct password for the current user.
+							</div>
+						
+							<div class="alert alert-success" *ngIf="updateUserInfoSuccess">
+								<strong>Update Success!</strong>
+							</div>
+
+							<form #formProfile="ngForm" (ngSubmit)="onUpdateUserInfo()">
+								<input type="hidden" name="userId" [(ngModel)]="user.userId">
+
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-6 col-md-6">
+											<label class="control-label">First Name</label> 
+											<input type="text" #firstName1="ngModel"  [(ngModel)]="user.firstName" name="firstName" class="form-control" required="required" />
+
+											<span class="badge badge-danger" *ngIf="firstName1.dirty && firstName1.errors?.required">Required</span>
+
+										</div>
+										<div class="col-sm-6 col-md-6">
+											<label for="lastname">Last Name</label> 
+											<input type="text" #lastName1="ngModel" name="lastName" [(ngModel)]="user.lastName" class="form-control" required="required" />
+
+											<span class="badge badge-danger" *ngIf="lastName1.dirty && lastName1.errors?.required">Required</span>
+											
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="control-label">Username</label>
+									<input type="text" #username1="ngModel" name="username" [(ngModel)]="user.username" class="form-control" minlength="5" required="required" />
+									
+									<span class="badge badge-danger" *ngIf="username1.dirty && username1.errors?.required">Required</span>
+									<span class="badge badge-danger" *ngIf="username1.dirty && username1.errors?.minlength">Min length 5 chracters.</span>
+								</div>
+								
+								<div class="form-group">
+									<label class="control-label">Phone Number</label>
+									<input type="text" #phone1="ngModel" name="phone" [(ngModel)]="user.phone"class="form-control" required="required" />
+									
+									<span class="badge badge-danger" *ngIf="phone1.dirty && phone1.errors?.required">Required</span>
+								</div>
+								
+								<div class="form-group">
+									<label class="control-label">Current Password</label>
+									<input type="password" #password1="ngModel" name="password" class="form-control" [(ngModel)]="user.password" required="required" />
+									
+									<span class="badge badge-danger" *ngIf="password1.dirty && password1.errors?.required">Required</span>
+									
+								</div>
+								<p style="color: #828282">Enter your current password to
+									change the email address or password.</p>
+
+								<div class="form-group">
+									<label class="control-label">* Email Address</label>
+									<input type="text" #email1="ngModel" [(ngModel)]="user.email" name="email" class="form-control" 
+									pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
+								    required="required" />
+
+									<span class="badge badge-danger" *ngIf="email1.dirty && email1.errors?.required">Required</span>
+									<span class="badge badge-danger" *ngIf="email1.dirty && email1.errors?.pattern">
+										Email invalid
+									</span>
+									
+								</div>
+								<p style="color: #828282">A valid email address. All
+									emails from the system withll be sent to this address. The
+									email address is not made public and will only be used if you
+									wish to receive a new password or wish to receive certain
+									notification.</p>
+
+								<div class="form-group">
+									<label class="control-label">New Password</label>&nbsp;
+									
+									<input type="password" #newPassword1="ngModel" class="form-control" name="newPassword" [(ngModel)]="newPassword" id="txtNewPassword" (keyup)="onNewPassword()" required="required" />
+
+									<span class="badge badge-danger" *ngIf="newPassword1.dirty && newPassword1.errors?.required">Required</span>
+									
+								</div>
+
+								<div class="form-group">
+									<label class="control-label">Confirm Password</label>
+									<input  type="password" #confirmPassword1="ngModel" [(ngModel)]="confirmPassword" name="confirmPassword" class="form-control" name="confirmPassword" (keyup)="onConfirmPassword()" id="txtConfirmPassword" required="required" /> 
+
+									<span id="resultPass"></span>
+									
+								</div>
+
+								<p style="color:#828282">To change the current user password, enter the new password in both fields.</p>
+								
+								<button id="btnUpdateUserInfo" type="submit" [disabled]="!formProfile.valid" class="btn btn-primary">Save All</button>
+							</form>
+						</div>
+					</div>
+			  	</mat-tab>
+
+			  	<mat-tab label="Orders">
+			  		<div class="card" style="border: none;">
+						<div class="card-body" style="background-color: #ededed; margin-top: 20px;"	>
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="text-center">Order ID</th>
+										<th class="text-center">Order Date</th>
+										<th class="text-center">Total</th>
+										<th class="text-center">Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let order of orders">
+										<td class="text-center">{{ order.userOrderId }}</td>
+										<td class="text-center">
+											<a mat-button (click)="onDisplayOrder(order)">
+												<span>{{ order.orderDate | date:'dd-MM-y' }}</span>
+											</a>
+										</td>
+										
+										<td class="text-center">{{ order.orderTotal | currency:'USD':'symbol':'1.2-2' }}</td>
+										<td class="text-center">{{ order.orderStatus }}</td>
+									</tr>	
+								</tbody>
+							</table>
+							
+							<div *ngIf="displayOrderDetail">
+										
+								<div class="text-center">
+									<h2>
+										Order Detail for Purchase #<span>{{ order.userOrderId }}</span>
+									</h2>
+								</div>
+								<hr />
+
+								<div class="row">
+									<div class="col-sm-4 col-md-4">
+										<div class="card">
+											<div class="card-header">
+												<strong>Billing Details</strong>
+											</div>
+											<div class="card-body">
+												<span>{{ order.billingAddress.billingAddressName }}</span><br/>
+												<span>{{ order.billingAddress.billingAddressStreet }}</span><br/>
+												<span>{{ order.billingAddress.billingAddressCountry }}</span><br/>
+												<span>{{ order.billingAddress.billingAddressCity }}</span><br/>
+												<span>{{ order.billingAddress.billingAddressState }}</span><br/>
+												<span>{{ order.billingAddress.billingAddressZipcode }}</span>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-sm-4 col-md-4">
+										<div class="card">
+											<div class="card-header">
+												<strong>Payment Information</strong>
+											</div>
+											<div class="card-body">
+												<span>{{ order.payment.holderName }}</span><br/> 
+												<span>{{ order.payment.cardNumber }}</span><br/> 
+												<span>Expiry Date:</span>
+												<span>{{ order.payment.expiryMonth }}</span> /
+												<span>{{ order.payment.expiryYear }}</span>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-sm-4 col-md-4">
+										<div class="card">
+											<div class="card-header">
+												<strong>Shipping Details</strong>
+											</div>
+											<div class="card-body">
+												<span>{{ order.shippingAddress.shippingAddressName }}</span><br />
+												<span>{{ order.shippingAddress.shippingAddressStreet }}</span><br />
+												<span>{{ order.shippingAddress.shippingAddressCountry }}</span><br />
+												<span>{{ order.shippingAddress.shippingAddressCity }}</span><br />
+												<span>{{ order.shippingAddress.shippingAddressState }}</span><br />
+												<span>{{ order.shippingAddress.shippingAddressZipcode }}</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<h3 class="text-center">
+									<strong>Order Summary</strong>
+								</h3>
+								<hr />
+								<div class="card">
+							
+									<div class="card-body">
+										
+											<table class="table">
+												<thead>
+													<tr>
+														<th class="text-center">Item Name</th>
+														<th class="text-center">Item Price</th>
+														<th class="text-center">Item Quantity</th>
+														<th class="text-center">Total</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr *ngFor="let cartItem of order.cartItems">
+														<td class="text-center">{{ cartItem.book.title }}</td>
+														<td class="text-center">{{ cartItem.book.ourPrice | currency:'USD':'symbol':'1.2-2' }}</td>
+														<td class="text-center">{{ cartItem.qty }}</td>
+														<td class="text-center">{{ cartItem.subtotal | currency:'USD':'symbol':'1.2-2' }}</td>
+													</tr>
+													<tr>
+														<td></td>
+														<td></td>
+														<td class="text-center"><strong>Subtotal</strong></td>
+														<td class="text-center" >{{ order.orderTotal | currency:'USD':'symbol':'1.2-2' }}</td>
+													</tr>
+													<tr>
+														<td></td>
+														<td></td>
+														<td  class="text-center"><strong>Tax</strong></td>
+														<td class="text-center">{{ order.orderTotal*0.06 | currency:'USD':'symbol':'1.2-2' }}</td>
+													</tr>
+													<tr>
+														<td><i class="fa fa-barcode iconbig"></i></td>
+														<td></td>
+														<td class="text-center"><strong>Total</strong></td>
+														<td class="text-center">{{ order.orderTotal+order.orderTotal*0.06 | currency:'USD':'symbol':'1.2-2' }}</td>
+													</tr>
+												</tbody>
+											</table>
+										
+									</div>
+								</div>
+							
+							</div>
+
+						</div>	
+						
+					</div>
+				</mat-tab>
+			
+			  	<mat-tab label="Payment">
+			  		<div class="card" style="border: none;">
+						<div class="card-body" style="background-color: #ededed; margin-top: 20px;"	>
+							<div *ngIf="defaultPaymentSet" class="alert alert-success">
+								Default payment set successfully!
+							</div>
+
+							<mat-tab-group (selectedIndexChange)="selectedBillingChange($event)" [selectedIndex]="selectedBillingTab">
+								<mat-tab label="List of Credit Cards">
+									
+										<table class="table">
+	                               			<thead>
+	                               				<tr>
+	                               					<th class="text-center">Default</th>
+	                               					<th class="text-center">Credit Card</th>
+	                               					<th class="text-center">Operations</th>
+	                               				</tr>
+	                               			</thead>
+	                               			<tbody>
+	                               				<tr *ngFor="let userPayment of userPayments">
+	                               					<td class="text-center">
+	                               						<a mat-button (click)="onSetDefaultPayment(userPayment.userPaymentId)">
+	                               							<input type="radio" [checked]="userPayment.defaultPayment" />
+	                               						</a>
+	                               						
+	                               					</td>
+	                               					<td class="text-center">{{ userPayment.cardName }}</td>
+
+	                               					<td class="text-center">
+	                               						<a mat-button (click)="onUpdateUserPayment(userPayment)"><i class="fa fa-pencil"></i ></a>
+
+	                               						<a mat-button (click)="onRemoveUserPayment(userPayment.userPaymentId)"
+	                               						onclick="if (!(confirm('Are you sure you want to delete this credit card?'))) return false;"><i class="fa fa-times"></i></a>
+	                               					</td>
+	                               				</tr>
+	                               			</tbody>
+	                       				</table>
+	                       				
+								</mat-tab>
+
+								<mat-tab label="Add(Update) Credit Card">
+									<form #formPayment="ngForm" (ngSubmit)="onNewUserPayment()">
+										
+										<!-- Billing Address -->
+										<hr />
+										<div class="form-group">
+											<h4>Billing Address</h4>
+										</div>
+										
+										<div class="form-group">
+											<label class="control-label" for="billingName">* Name</label> 
+											<input type="text" #billingName1="ngModel" [(ngModel)]="userBilling.name" name="name" class="form-control" id="billingName" placeholder="Receiver Name" required="required" />
+
+											<span class="badge badge-danger" *ngIf="billingName1.dirty && billingName1.errors?.required">Required</span>
+									
+										</div>
+										
+										<div class="form-group">
+											<label class="control-label" for="billingStreet">* Street Name</label> 
+											<input type="text" #billingStreet1="ngModel" [(ngModel)]="userBilling.street" name="street" class="form-control" id="billingStreet" placeholder="Billing Street" required="required" />
+
+											<span class="badge badge-danger" *ngIf="billingStreet1.dirty && billingStreet1.errors?.required">Required</span>
+											
+										</div>
+										
+										<div class="form-group">
+											<label class="control-label" for="billingCountry">* Country</label> 
+											<input type="text" #billingCountry1="ngModel"  [(ngModel)]="userBilling.country" name="country" class="form-control" id="billingCountry" placeholder="Billing country" required="required" />
+
+											<span class="badge badge-danger" *ngIf="billingCountry1.dirty && billingCountry1.errors?.required">Required</span>
+											
+											
+										</div>
+									
+										<div class="row">
+											<div class="col-sm-4 col-md-4">
+												<div class="form-group">
+													<label class="control-label" for="billingCity">* City</label>
+													 <input type="text" #billingCity1="ngModel" class="form-control" [(ngModel)]="userBilling.city" name="city" id="billingCity" placeholder="Billing city" required="required" />
+
+													<span class="badge badge-danger" *ngIf="billingCity1.dirty && billingCity1.errors?.required">Required</span>
+													
+												</div>
+											</div>
+											
+											<div class="col-sm-4 col-md-4">
+												<div class="form-group">
+													<label class="control=label" for="billingState">* State</label> 
+													<select [(ngModel)]="userBilling.state" name="state" id="billingState" class="form-control">
+														<option value="" disabled="disabled">-- State --</option>
+														<option *ngFor="let state of states" [value]="state">{{ state }}</option>
+													</select>
+												</div>
+											</div>
+											
+											<div class="col-sm-4 col-md-4">
+												<div class="form-group">
+													<label class="control-label" for="billingZipCode">* Zipcode</label>
+													 <input type="text" #billingZipCode1="ngModel" [(ngModel)]="userBilling.zipCode" name="zipCode" class="form-control" id="billingZipCode" placeholder="Billing Zipcode" required="required" />
+													
+													 <span class="badge badge-danger" *ngIf="billingZipCode1.dirty && billingZipCode1.errors?.required">Required</span>
+												</div>
+											</div>
+										</div>
+								
+										<!-- Credit Card Information -->
+										<hr />
+										<div class="form-group">
+											<h4>Credit Card Information</h4>
+										</div>
+										
+										<div class="form-group">
+											<label class="control-label" for="cardName">* Give a name for your card:</label>
+											<input type="text" #cardName1="ngModel" [(ngModel)]="userPayment.cardName" name="cardName" class="form-control" id="cardName" placeholder="Card Name" required="required" />
+
+											  <span class="badge badge-danger" *ngIf="cardName1.dirty && cardName1.errors?.required">Required</span>
+											
+										</div>
+										
+										<img src="assets/image/creditcard.png" class="img-fluid" /><br><br>
+										
+										<div class="form-group">
+											<label class="control-label" for="cardType">* Select Card Type:</label>
+											<select class="form-control"  id="cardType" [(ngModel)]="userPayment.type" name="type">
+												<option value="" disabled="disabled">-- Card Type --</option>
+												<option value="visa">Visa</option>
+												<option value="Mastercard">Mastercard</option>
+												<option value="Discover">Discover</option>
+												<option value="American Express">American Express</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<label class="control-label" for="cardHolder">* Card Holder Name:</label>
+											<input type="text" #cardHolder1="ngModel" [(ngModel)]="userPayment.holderName" name="holderName" class="form-control" id="cardHolder"
+												placeholder="Card Holder Name" required="required" />
+
+											 <span class="badge badge-danger" *ngIf="cardHolder1.dirty && cardHolder1.errors?.required">Required</span>
+											
+										</div>
+										<div class="form-group">
+											<label class="control-label" for="cardNumber">* Card Number:</label>
+											<div class="input-group">
+												<input type="text"  #cardNumber1="ngModel"  [(ngModel)]="userPayment.cardNumber" name="cardNumber" class="form-control" id="cardNumber" 
+													placeholder="Valid Card Number" required="required" />
+												<div class="input-group-append">
+													<i class="input-group-text fa fa-credit-card"></i>
+												</div>
+
+											</div>
+
+											 <span class="badge badge-danger" *ngIf="cardNumber1.dirty && cardNumber1.errors?.required">Required</span>
+										</div>
+									
+										<div class="row">
+											<div class="col-sm-7 -md-7">
+												<div class="form-group">
+													
+													<div class="row">
+														<div class="col-sm-6 col-md-6">
+															<label class="control-label" for="expiryMonth">* Expiration Month</label>
+															<select class="form-control" name="expiryMonth" [(ngModel)]="userPayment.expiryMonth" id="expiryMonth">
+																<option value="" disabled="disabled">-- Month --</option>
+																<option value="1">Jan (01)</option>
+	                                                           	<option value="2">Feb (02)</option>
+	                                                           	<option value="3">Mar (03)</option>
+	                                                           	<option value="4">Apr (04)</option>
+	                                                          	<option value="5">May (05)</option>
+	                                                          	<option value="6">June (06)</option>
+	                                                           	<option value="7">July (07)</option>
+	                                                           	<option value="8">Aug (08)</option>
+	                                                           	<option value="9">Sep (09)</option>
+	                                                           	<option value="10">Oct (10)</option>
+	                                                           	<option value="11">Nov (11)</option>
+	                                                           	<option value="12">Dec (12)</option>
+															</select>
+														</div>
+														<div class="col-sm-6 col-md-6">
+															<label class="control-label" for="expiryYear">* Expiration Year</label>
+															<select class="form-control" name="expiryYear"
+															[(ngModel)]="userPayment.expiryYear" id="expiryYear">
+																<option value="" disabled="disabled">-- Year --</option>
+																<option value="2017">2017</option>
+																<option value="2018">2018</option>
+																<option value="2019">2019</option>
+	                                                            <option value="2020">2020</option>
+	                                                            <option value="2021">2021</option>
+	                                                            <option value="2022">2022</option>
+	                                                            <option value="2023">2023</option>
+	                                                            <option value="2024">2024</option>
+	                                                            <option value="2025">2025</option>
+	                                                            <option value="2026">2026</option>
+	                                                            <option value="2027">2027</option>
+	                                                            <option value="2028">2028</option>
+	                                                            <option value="2029">2029</option>
+	                                                        </select>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-5 col-md-5">
+												<div class="form-group">
+													<label class="control-label" for="cardCVC">CVC Code</label>
+													<input #cardCVC1="ngModel" id="cardCVC" type="tel" name="cvc" [(ngModel)]="userPayment.cvc" class="form-control" placeholder="cvc" required="required" />
+
+													 <span class="badge badge-danger" *ngIf="cardCVC1.dirty && cardCVC1.errors?.required">Required</span>
+												</div>
+											</div>
+										</div>
+										<hr/>
+										<button type="submit" [disabled]="!formPayment.valid" class="btn btn-primary">Save All</button>
+
+									</form>
+								</mat-tab>
+							</mat-tab-group>
+							
+						</div>
+					</div>
+
+			  	</mat-tab>
+
+
+
+			  	<mat-tab label="Shipping">
+			  		<div class="card" style="border: none;">
+						<div class="card-body"
+							style="background-color: #ededed; margin-top: 20px;">
+
+							<div *ngIf="defaultShippingSet" class="alert alert-success">
+								Default shipping set successfully!
+							</div>
+
+							<mat-tab-group (selectedIndexChange)="selectedShippingChange($event)" [selectedIndex]="selectedShippingTab">
+								<mat-tab label="List of Shipping Addresses">
+									
+									<table class="table">
+                               			<thead>
+                               				<tr>
+                               					<th class="text-center">Default</th>
+                               					<th class="text-center">Shipping Address</th>
+                               					<th class="text-center">Operations</th>
+                               				</tr>
+                               			</thead>
+                               			<tbody>
+                               				<tr *ngFor="let userShipping of userShippings">
+                               					<td class="text-center">
+                               						<a mat-button (click)="onSetDefaultShipping(userShipping.userShippingId)">
+                               							<input type="radio" [checked]="userShipping.shippingDefault" />
+                               						</a>
+                               						
+                               					</td>
+                               					<td class="text-center">
+                               						{{ userShipping.street }},
+                               						{{ userShipping.city }},
+                               						{{ userShipping.state }}
+                               					</td>
+                               					<td class="text-center">
+                               						<a mat-button (click)="onUpdateUserShipping(userShipping)"><i class="fa fa-pencil"></i ></a>
+                               						<a mat-button (click)="onRemoveUserShipping(userShipping.userShippingId)"><i class="fa fa-times"></i></a>
+                               					</td>
+                               				</tr>
+                               			</tbody>
+                       				</table>
+	                       		
+								</mat-tab>
+
+								<mat-tab label="Add(Update) Shipping Address">
+									<form #formShipping="ngForm" (ngSubmit)="onNewUserShipping()">
+									
+										<!-- Shipping Address -->
+										<hr />
+										<div class="form-group">
+											<h4>Shipping Address</h4>
+										</div>
+										
+										<div class="form-group">
+											<label class="control-label" for="shippingName">* Name</label> 
+											<input type="text" #shippingName1="ngModel" [(ngModel)]="userShipping.name" name="name" class="form-control" id="shippingName" placeholder="Receiver Name" required="required" />
+
+											<span class="badge badge-danger" *ngIf="shippingName1.dirty && shippingName1.errors?.required">Required</span>
+									
+										</div>
+										
+										<div class="form-group">
+											<label class="control-label" for="shippingStreet">* Street Name</label> 
+											<input type="text" #shippingStreet1="ngModel"  [(ngModel)]="userShipping.street" name="street" class="form-control" id="shippingStreet" placeholder="Shipping Street" required="required" />
+
+											<span class="badge badge-danger" *ngIf="shippingStreet1.dirty && shippingStreet1.errors?.required">Required</span>
+											
+										</div>
+										
+										<div class="form-group">
+											<label class="control-label" for="shippingCountry">* Country</label> 
+											<input type="text" #shippingCountry1="ngModel"   [(ngModel)]="userShipping.country" name="country" class="form-control" id="shippingCountry" placeholder="Shipping Country" required="required" />
+											
+											<span class="badge badge-danger" *ngIf="shippingCountry1.dirty && shippingCountry1.errors?.required">Required</span>
+											
+										</div>
+									
+										<div class="row">
+											<div class="col-sm-4 col-md-4">
+												<div class="form-group">
+													<label class="control-label" for="shippingCity">* City</label>
+													 <input type="text" #shippingCity1="ngModel" class="form-control" [(ngModel)]="userShipping.city" name="city" id="shippingCity" placeholder="Shipping City" required="required" />
+													
+													<span class="badge badge-danger" *ngIf="shippingCity1.dirty && shippingCity1.errors?.required">Required</span>
+												</div>
+											</div>
+											
+											<div class="col-sm-4 col-md-4">
+												<div class="form-group">
+													<label class="control=label" for="shippingState">* State</label> 
+													<select  [(ngModel)]="userShipping.state" name="state" id="shippingState" class="form-control">
+														<option value="" disabled="disabled">-- State --</option>
+														<option *ngFor="let state of states" [value]="state">{{ state }}</option>
+													</select>
+												</div>
+											</div>
+											
+											<div class="col-sm-4 col-md-4">
+												<div class="form-group">
+													<label class="control-label" for="shippingZipCode">* Zipcode</label>
+													 <input type="text" #shippingZipCode1="ngModel"  [(ngModel)]="userShipping.zipCode" name="zipCode" class="form-control" id="shippingZipCode" placeholder="Shipping Zipcode" required="required" />
+													
+													<span class="badge badge-danger" *ngIf="shippingZipCode1.dirty && shippingZipCode1.errors?.required">Required</span>
+													
+												</div>
+											</div>
+										</div>
+										<hr/>
+										<button type="submit" [disabled]="!formShipping.valid"  class="btn btn-primary">Save All</button>
+									
+									</form>
+								</mat-tab>
+							</mat-tab-group>
+						</div>
+					</div>
+			  	</mat-tab>
+			</mat-tab-group>
+			
+		</div>
+	</div>
+
+</div>
+
