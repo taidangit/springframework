@@ -6,7 +6,7 @@
   <packaging>war</packaging>
   
    <properties>
-		<mysql.connector.version>8.0.13</mysql.connector.version>
+		<mysql.connector.version>8.0.28</mysql.connector.version>
 	</properties>
   
   <dependencies>
